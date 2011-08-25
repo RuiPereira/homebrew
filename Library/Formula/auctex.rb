@@ -5,33 +5,34 @@ class Auctex < Formula
   homepage 'http://ftp.gnu.org/pub/gnu/auctex'
   md5 '6bc33a67b6ac59db1aa238f3693b36d2'
 
-  depends_on 'emacs'
-
   def install
-    begin
-      system "which tex"
-    rescue
-      onoe 'TeX installation not found...'
+    # based on the asymtote formula LaTeX check
+    if `which latex` == ''
+      onoe <<-EOS.undent
+        AUXTeX requires a TeX/LaTeX installation; aborting now.
+        You can obtain the TeX distribution for Mac OS X from
+            http://www.tug.org/mactex/
+      EOS
       Process.exit
-    else
-      emacs = Dir[File.join HOMEBREW_PREFIX, 'bin', 'emacs']
-      texmf = File.join ENV['HOME'], 'texmf'
-      if !File.directory? texmf
-        ohai 'Creating #{texmf}'
-        Dir.mkdir texmf
-      end
-      system "./configure", "--disable-debug", "--disable-dependency-tracking",
-      "--prefix=#{prefix}", "--with-texmf-dir=#{texmf}", "--with-emacs=#{emacs}"
-      system "make"
-      system "make install"
     end
+    texmf = `kpsewhich -var-value=TEXMFHOME`.chop
+    emacs = `which emacs`.chop
+    lispdir = File.join ENV['HOME'], '.emacs.d', 'auctex'
+    system "./configure", "--prefix=#{prefix}", "--with-texmf-dir=#{texmf}", 
+                          "--with-emacs=#{emacs}", "--with-lispdir=#{lispdir}"
+    system "make"
+    system "make install"
   end
 
   def caveats; <<-EOS.undent
-    * texmf files are installed into
-      #{File.join ENV['HOME'], 'texmf'}
+    * texmf files installed into
+      ~/Library/texmf/tex/preview
+
+    * the Emacs package was installed into 
+      ~/.emacs.d/auctex
 
     * to activate add the following to your .emacs
+      (add-to-list 'load-path "~/.emacs.d/auctex")
       (require 'tex-site)
     EOS
   end
