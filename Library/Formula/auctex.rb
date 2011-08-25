@@ -9,7 +9,7 @@ class Auctex < Formula
     # based on the asymtote formula LaTeX check
     if `which latex` == ''
       onoe <<-EOS.undent
-        AUXTeX requires a TeX/LaTeX installation; aborting now.
+        AUCTeX requires a TeX/LaTeX installation; aborting now.
         You can obtain the TeX distribution for Mac OS X from
             http://www.tug.org/mactex/
       EOS
