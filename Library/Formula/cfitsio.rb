@@ -1,5 +1,11 @@
 require 'formula'
 
+class CfitsioExamples < Formula
+  url 'http://heasarc.gsfc.nasa.gov/docs/software/fitsio/cexamples/cexamples.zip'
+  md5 '31a5f5622a111f25bee5a3fda2fdac28'
+  version '2010.08.19'
+end
+
 class Cfitsio < Formula
   url 'ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3280.tar.gz'
   homepage 'http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html'
@@ -8,7 +14,7 @@ class Cfitsio < Formula
 
   def options
     [
-     ['--examples', "Compile and install example programs from http://heasarc.gsfc.nasa.gov/docs/software/fitsio/cexamples.html"]
+     ['--with-examples', "Compile and install example programs from http://heasarc.gsfc.nasa.gov/docs/software/fitsio/cexamples.html as well as fpack and funpack"]
     ]
   end
 
@@ -18,25 +24,21 @@ class Cfitsio < Formula
     system "make shared"
     system "make install"
 
-    # fetch, compile and install examples programs
-    # compressed_fits.c does not work under x86_64
-    if ARGV.include? '--examples'
-      mkdir 'examples'
-      Dir.chdir 'examples' do
-        ohai 'Downloading example programs'
-        curl 'http://heasarc.gsfc.nasa.gov/docs/software/fitsio/cexamples/cexamples.zip', '-O'
-        system 'unzip cexamples.zip'
+    if ARGV.include? '--with-examples'
+      system "make fpack funpack"
+      bin.install ['fpack', 'funpack']
+
+      # fetch, compile and install examples programs
+      CfitsioExamples.new.brew do
         mkdir 'bin'
         Dir.glob('*.c').each do |f|
-          begin
-            system "#{ENV.compiler} #{f} -I #{include} -L #{lib} -lcfitsio -o bin/#{f.sub('.c','')}"
-          rescue
-            opoo "Compilation of #{f} failed..."
+          # compressed_fits.c does not work (obsolete function call)
+          if f != 'compress_fits.c'
+            system "#{ENV.compiler} #{f} -I#{include} -L#{lib} -lcfitsio -lm -o bin/#{f.sub('.c','')}"
           end
         end
         bin.install Dir['bin/*']
       end
     end
-
   end
 end
