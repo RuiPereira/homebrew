@@ -8,11 +8,24 @@ class Lapack < Formula
   depends_on 'blas'
 
   def install
+    ENV.deparallelize
     ENV.fortran
     cp 'INSTALL/make.inc.gfortran', 'make.inc'
     inreplace 'make.inc', '../../blas$(PLAT).a', Dir[File.join HOMEBREW_PREFIX, 'lib/libblas.a'][0]
-    system "make"
+    system "make lib"
     lib.install 'lapack_LINUX.a' => 'liblapack.a'
     lib.install 'tmglib_LINUX.a' => 'libtmg.a'
+    inreplace 'make.inc', 'lapack$(PLAT).a', 'lib/liblapack.a'
+    inreplace 'make.inc', 'tmglib$(PLAT).a', 'lib/libtmg.a'
+    prefix.install ['make.inc', 'TESTING']
   end
+
+  def test
+    # this will take a while...
+    Dir.chdir prefix + 'TESTING' do
+      system 'make'
+      system 'make clean'
+    end
+  end
+
 end
