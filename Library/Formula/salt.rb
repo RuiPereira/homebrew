@@ -110,8 +110,7 @@ class Salt < Formula
     ENV.fortran
     # the libgfortran.a path needs to be set explicitly
     # for the --enable-gfortran option
-    p = MacOS.prefer_64_bit? ? 'x86_64/*' : '*'
-    libgfortran = Dir[`brew --prefix gfortran`.chomp + "/lib/gcc/*/*/#{p}libgfortran*"][0]
+    libgfortran = `$FC --print-file-name libgfortran.a`.chomp
     ENV.append 'LDFLAGS', "-L#{File.dirname libgfortran}"
     system "./configure", "--prefix=#{prefix}", "--enable-gfortran"
     lib.mkpath
