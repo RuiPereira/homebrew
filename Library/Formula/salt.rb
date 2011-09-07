@@ -3,61 +3,51 @@ require 'formula'
 class SaltSALT2 < Formula
   url 'http://supernovae.in2p3.fr/~guy/salt-dev/download/salt2_model_data-2-0.tar.gz'
   md5 'ed8c0ab8cf75dbb98643ddc7a76ba1a9'
-  def linkto () return '' end
 end
 class Salt04D3gx < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-04D3gx.tar.gz"
   md5 "17a03aa77636d8a5fb2eb9bc6fc48e75"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class Salt4SHOOTER2 < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-4Shooter2.tar.gz"
   md5 "478ae9ca99f220a41eb923c230037ee4"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltSWOPE < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-CSP-Swope.tar.gz"
   md5 "d7e0ca6a982373dc775d19016bbdab40"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltACSWF < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-HST-ACSWF.tar.gz"
   md5 "518521528b5af934b6d4281184b09ecd"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltNICMOS2 < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-HST-NICMOS2.tar.gz"
   md5 "354e58e26d491ddcaec2dcf28c8b22e8"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltKEPLERCAM < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-Keplercam.tar.gz"
   md5 "5c3f1c80e68a3faaa620d619c098cb49"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltSTANDARD < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-Landolt-model.tar.gz"
   md5 "7d6e34688bc5cee02c89675f4213b4ca"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltMEGACAM < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-Megacam-model.tar.gz"
   md5 "c2786e737f3a2d530e5ac3b941718b68"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltSDSS < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-SDSS-model-Doi2010.tar.gz"
   md5 "118f6e2be45eebca0af89fe2f318548a"
   version '2.2.2b'
-  def linkto () return '' end
 end
 class SaltSDSS_AB_off < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-SDSS-magsys.tar.gz"
@@ -96,8 +86,9 @@ class Salt < Formula
       (installdir + d).install Dir['*']
       # the fitmodel file will link by default to the first dir
       # on the path right after #{prefix}/data/
-      linkto = s.linkto
-      if linkto == ''
+      if s.respond_to? 'linkto'
+        linkto = s.linkto
+      else
         base = File.basename installdir
         linkto = base == 'data' ? d : File.join(base, d)
       end
@@ -109,12 +100,10 @@ class Salt < Formula
     ENV.deparallelize
     ENV.fortran
     # the libgfortran.a path needs to be set explicitly
-    # for the --enable-gfortran option
+    # for the --enable-gfortran option to work
     libgfortran = `$FC --print-file-name libgfortran.a`.chomp
     ENV.append 'LDFLAGS', "-L#{File.dirname libgfortran}"
     system "./configure", "--prefix=#{prefix}", "--enable-gfortran"
-    lib.mkpath
-    system "make"
     system "make install"
 
     # install all the model data
@@ -127,7 +116,6 @@ class Salt < Formula
         [SaltSALT2, SaltVEGA, SaltSDSS_AB_off, SaltVEGAHST].each do |cls|
           fitmodel.write(install_subbrew(cls, data))
         end
-
         # instruments
         inst = data + 'Instruments'
         [SaltSTANDARD, SaltMEGACAM, SaltKEPLERCAM, Salt4SHOOTER2, SaltSDSS,
