@@ -5,8 +5,9 @@ class Gv < Formula
   homepage 'http://www.gnu.org/s/gv/'
   md5 'eb47d465755b7291870af66431c6f2e1'
 
-  depends_on 'gs'
+  depends_on 'ghostscript'
   depends_on 'xaw3d'
+  skip_clean 'share/gv/safe-gs-workdir'
 
   def patches
     DATA
