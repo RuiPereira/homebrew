@@ -10,6 +10,8 @@ class Imake < Formula
   homepage 'http://xorg.freedesktop.org'
   md5 '48133c75bd77c127c7eff122e08ebbf6'
 
+  depends_on 'pkg-config' => :build
+
   def install
     ENV.deparallelize
     system "./configure", "--prefix=#{prefix}", "--mandir=#{man}"
