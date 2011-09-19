@@ -6,8 +6,10 @@ class Wakeonlan < Formula
   md5 'd3143c5fe92d16196ac853b55dd421b5'
 
   def install
-    system "perl", "Makefile.PL", "PREFIX=#{prefix}"
+    system "perl", "Makefile.PL"
     system "make"
-    system "make install"
+    # 'make install' tries to put stuff in /Library/Perl
+    bin.install 'blib/script/wakeonlan'
+    man1.install 'blib/man1/wakeonlan.1'
   end
 end
