@@ -37,6 +37,7 @@ class Valgrind < Formula
 
     system "./autogen.sh" if ARGV.build_head?
 
+    system "./autogen.sh" if ARGV.build_head?
     system "./configure", *args
     system "make install"
   end
