@@ -49,6 +49,11 @@ class SaltSDSS < Formula
   md5 "118f6e2be45eebca0af89fe2f318548a"
   version '2.2.2b'
 end
+class SaltSNIFS < Formula
+  url "http://snovae.in2p3.fr/pereira/SNIFS.tar.gz"
+  md5 "429baf814aacf4639a141cc20114bc9b"
+  version '2.2.2b'
+end
 class SaltSDSS_AB_off < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-SDSS-magsys.tar.gz"
   md5 "cf8c210fd19c3eef0b7f29b5d35c3270"
@@ -66,6 +71,9 @@ class SaltVEGA < Formula
   md5 "69c161ff17748c683df685e0a2ea2910"
   version '2.2.2b'
   def linkto () return 'MagSys/BD17-snls3.dat' end
+  if ARGV.include? '--snifs'
+    def patches () DATA end
+  end
 end
 
 class Salt < Formula
@@ -75,7 +83,8 @@ class Salt < Formula
 
   def options
     [
-     ['--with-data', 'Install model data']
+     ['--with-data', 'Install model data'],
+     ['--snifs', 'Install SNIFS data']
     ]
   end
 
@@ -122,6 +131,9 @@ class Salt < Formula
          SaltSWOPE, SaltACSWF, SaltNICMOS2].each do |cls|
           fitmodel.write(install_subbrew(cls, inst))
         end
+        if ARGV.include? '--snifs'
+          fitmodel.write(install_subbrew(SaltSNIFS, inst))
+        end
       end
 
       # for testing
@@ -149,3 +161,31 @@ class Salt < Formula
   end
 
 end
+
+__END__
+index 01f80af..147cde5 100644
+--- a/BD17-snls3.dat
++++ b/BD17-snls3.dat
+@@ -61,4 +61,21 @@ SWOPE r 9.3513
+ SWOPE i 9.2495
+ SWOPE B 9.8882
+ SWOPE V 9.4806
+-
++#
++# SNfactory filterset
++# we can set ZP == 0 if we use directly bd_17d4708_stisnic_002.fits as reference for our synth mags
++#
++#SNIFS USNf 0.0
++#SNIFS BSNf 0.0
++#SNIFS VSNf 0.0
++#SNIFS RSNf 0.0
++#SNIFS ISNf 0.0
++#
++# using Vega.fits as reference in quick_magn
++# "quick_magn bd_17d4708_stisnic_002.fits -R /Users/rui/work/cvsrepositories/Tasks/Calibration/Reftables/Refflux/fits/Vega.fits" (this Vega is corrected for summit conditions)
++#
++SNIFS USNf 9.787
++SNIFS BSNf 9.791
++SNIFS VSNf 9.353
++SNIFS RSNf 9.011
++SNIFS ISNf 8.768
