@@ -72,7 +72,7 @@ class SaltVEGA < Formula
   version '2.2.2b'
   def linkto () return 'MagSys/BD17-snls3.dat' end
   if ARGV.include? '--snifs'
-    def patches () DATA end
+    def patches () "http://git.io/salt2diff2" end
   end
 end
 
@@ -104,6 +104,8 @@ class Salt < Formula
       return "@#{subbrew.name.sub('Salt', '').gsub('_','-')} #{linkto}\n"
     end
   end
+
+  def patches () "http://git.io/salt2diff" end
 
   def install
     ENV.deparallelize
@@ -161,31 +163,3 @@ class Salt < Formula
   end
 
 end
-
-__END__
-index 01f80af..147cde5 100644
---- a/BD17-snls3.dat
-+++ b/BD17-snls3.dat
-@@ -61,4 +61,21 @@ SWOPE r 9.3513
- SWOPE i 9.2495
- SWOPE B 9.8882
- SWOPE V 9.4806
--
-+#
-+# SNfactory filterset
-+# we can set ZP == 0 if we use directly bd_17d4708_stisnic_002.fits as reference for our synth mags
-+#
-+#SNIFS USNf 0.0
-+#SNIFS BSNf 0.0
-+#SNIFS VSNf 0.0
-+#SNIFS RSNf 0.0
-+#SNIFS ISNf 0.0
-+#
-+# using Vega.fits as reference in quick_magn
-+# "quick_magn bd_17d4708_stisnic_002.fits -R /Users/rui/work/cvsrepositories/Tasks/Calibration/Reftables/Refflux/fits/Vega.fits" (this Vega is corrected for summit conditions)
-+#
-+SNIFS USNf 9.787
-+SNIFS BSNf 9.791
-+SNIFS VSNf 9.353
-+SNIFS RSNf 9.011
-+SNIFS ISNf 8.768
