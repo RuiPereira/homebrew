@@ -17,8 +17,8 @@ class Pgplot < Formula
              # from MacPorts: https://trac.macports.org/browser/trunk/dports/graphics/pgplot/files
              "https://trac.macports.org/export/89961/trunk/dports/graphics/pgplot/files/patch-makemake.diff",
              "https://trac.macports.org/export/89961/trunk/dports/graphics/pgplot/files/patch-proccom.c.diff",
-            ],
-      :p1 => DATA}
+            ]
+    }
   end
 
   def install
@@ -29,6 +29,10 @@ class Pgplot < Formula
 
     # re-hardcode the share dir
     inreplace 'src/grgfil.f', '/usr/local/pgplot', share
+    # perl may not be in /usr/local
+    inreplace 'makehtml', '/usr/local/bin/perl', `which perl`.chomp
+    # prevent a "dereferencing pointer to incomplete type" in libpng
+    inreplace 'drivers/pndriv.c', 'setjmp(png_ptr->jmpbuf)', 'setjmp(png_jmpbuf(png_ptr))'
 
     # configure options
     mkdir 'sys_darwin'
@@ -98,28 +102,3 @@ EOS
     system "#{prefix}/examples/pgdemo1"
   end
 end
-
-__END__
-diff --git a/drivers/pndriv.c b/drivers/pndriv.c
-index 2b2f87d..89f55fb 100644
---- a/drivers/pndriv.c
-+++ b/drivers/pndriv.c
-@@ -222,7 +222,7 @@ static void write_image_file(DeviceData *dev) {
- 	return;
-   }
- 
--  if (setjmp(png_ptr->jmpbuf)) { /* not really sure what I'm doing here... */
-+  if (png_jmpbuf(png_ptr)) { /* not really sure what I'm doing here... */
- 	fprintf(stderr,"%s: error in libpng while writing file %s, plotting disabled\n", png_ident, filename);
- 	png_destroy_write_struct(&png_ptr,&info_ptr);
- 	dev->error = true;
-diff --git a/makehtml b/makehtml
-index 2222600..08d0494 100755
---- a/makehtml
-+++ b/makehtml
-@@ -1,4 +1,4 @@
--#!/usr/local/bin/perl
-+#!/usr/bin/perl
- 
- $, = ' ';		# set output field separator
- $\ = "\n";		# set output record separator
