@@ -107,7 +107,7 @@ end
 
 __END__
 diff --git a/src/Makefile b/src/Makefile
-index cf9b3de..cd84b77 100644
+index cf9b3de..1792265 100644
 --- a/src/Makefile
 +++ b/src/Makefile
 @@ -191,9 +191,9 @@ endif
@@ -131,3 +131,17 @@ index cf9b3de..cd84b77 100644
  
  ICFITS    =  -I/$(CFITSIO_DIR)/include
  
+@@ -334,8 +334,12 @@ CLEAN_FILES =  $(EXECUTABLES) $(OBJECTS)  $(LIBSNANA)  $(LIBSNFIT)
+ ##	@ $(error error: Please invoke this makefile using sdssmake)
+ 
+ 
+-all:	$(LIBSNANA)  $(LIBSNFIT) $(OBJECTS)  $(EXECUTABLES)
++all:	$(LIBSNANA)  $(LIBSNFIT) $(OBJECTS) myranlib $(EXECUTABLES)
+ 
++# force ranlib run
++myranlib :
++	ranlib $(LIBSNANA)
++	ranlib $(LIBSNFIT)
+ 
+ # J.Hendry: 
+ install :
