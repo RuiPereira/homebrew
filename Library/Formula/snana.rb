@@ -59,6 +59,7 @@ class Snana < Formula
     if ARGV.include? '--with-data'
       data = Pathname.new File.expand_path prefix + 'data'
       data.mkdir
+      ohai 'This will take a while...'
       SnanaData.new.brew do
         data.install Dir['*']
       end
@@ -96,12 +97,13 @@ class Snana < Formula
   end
 
   def test
-    # This test will fail and we won't accept that! It's enough to just
-    # replace "false" with the main program this formula installs, but
-    # it'd be nice if you were more thorough. Test the test with
-    # `brew test snana`. Remove this comment before submitting
-    # your pull request!
-    system "false"
+    mktemp do
+      survey = 'HST'
+      cp "#{prefix}/data/analysis/sample_input_files/mlcs2k2/snfit_#{survey}.nml", '.'
+      # deprecated option
+      inreplace "snfit_#{survey}.nml", 'OPT_SIMEFF     = 1', ''
+      system "snlc_fit.exe snfit_#{survey}.nml"
+    end
   end
 end
 
