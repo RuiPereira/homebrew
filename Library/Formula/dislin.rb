@@ -16,7 +16,7 @@ class Dislin < Formula
 
   keg_only <<-EOS
   You should add the following to your .bashrc or equivalent:
-    export DISLIN=`brew --prefix dislin`
+    export DISLIN=`brew --prefix dislin #{ARGV.build_32_bit? ? '--32-bit' : ''}`
   EOS
 
   def options
