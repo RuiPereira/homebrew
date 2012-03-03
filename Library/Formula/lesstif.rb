@@ -6,6 +6,7 @@ class Lesstif < Formula
   homepage 'http://lesstif.sourceforge.net'
 
   def install
+    ENV.universal_binary
     ENV.x11
 
     # LessTif does naughty, naughty, things by assuming we want autoconf macros
