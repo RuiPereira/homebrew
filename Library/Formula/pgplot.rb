@@ -92,7 +92,7 @@ EOS
 
     # install libbutton
     Button.new.brew do
-      inreplace 'Makefile', 'f77', ENV['FC']
+      inreplace 'Makefile', 'f77', "#{ENV['FC']} #{ENV['FFLAGS']}"
       system "make"
       lib.install 'libbutton.a'
     end
