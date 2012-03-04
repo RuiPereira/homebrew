@@ -25,8 +25,8 @@ class SimpleCosfitter < Formula
   def test
     mktemp do
       cp Dir["#{prefix}/sample/Kowalski*"], '.'
-      system "runfitter Kowalski_wom_param.txt"
-      system "convert_to_fits Kowalski_wom_param.txt Kowalski_wom_output.fits"
+      system "#{bin}/runfitter Kowalski_wom_param.txt"
+      system "#{bin}/convert_to_fits Kowalski_wom_param.txt Kowalski_wom_output.fits"
     end
   end
 end
