@@ -1,5 +1,10 @@
 require 'formula'
 
+class SnidTemplates < Formula
+  url 'http://marwww.in2p3.fr/~blondin/software/snid/templates-2.0.tgz'
+  md5 '3534a6a990c4b35e611514dfe95cce83'
+end
+
 class Snid < Formula
   url 'http://marwww.in2p3.fr/~blondin/software/snid/snid-5.0.tar.gz'
   homepage 'http://marwww.in2p3.fr/~blondin/software/snid/'
@@ -12,9 +17,19 @@ class Snid < Formula
   def install
     ENV.fortran
     ENV.x11
+
+    # new templates
+    SnidTemplates.new.brew do
+      prefix.install '../templates-2.0'
+    end
+
     # where to store spectral templates
-    inreplace 'source/snidmore.f', 'INSTALL_DIR/snid-5.0', prefix
-    ENV.append 'FFLAGS', '-O -fno-automatic'
+    inreplace 'source/snidmore.f', 'INSTALL_DIR/snid-5.0/templates', "#{prefix}/templates-2.0"
+    # allow for more templates
+    inreplace 'source/snid.inc', 'MAXPPT = 20000', 'MAXPPT = 50000'
+    inreplace 'source/snid.inc', 'MAXTEMP = 3000', 'MAXTEMP = 10000'
+
+    ENV.append 'FCFLAGS', '-O -fno-automatic'
     ENV['PGLIBS'] = "-Wl,-framework -Wl,Foundation -L#{HOMEBREW_PREFIX}/lib -lpgplot"
     system "make"
     bin.install 'snid', 'logwave', 'plotlnw'
