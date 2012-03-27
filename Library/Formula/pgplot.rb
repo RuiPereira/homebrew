@@ -12,6 +12,10 @@ class Pgplot < Formula
   md5 'e8a6e8d0d5ef9d1709dfb567724525ae'
   version '5.2.2'
 
+  def options
+    [['--with-button', 'Install libbutton']]
+  end
+
   def patches
     {:p0 => [
              # from MacPorts: https://trac.macports.org/browser/trunk/dports/graphics/pgplot/files
@@ -35,8 +39,7 @@ class Pgplot < Formula
     inreplace 'drivers/pndriv.c', 'setjmp(png_ptr->jmpbuf)', 'setjmp(png_jmpbuf(png_ptr))'
 
     # configure options
-    mkdir 'sys_darwin'
-    cd 'sys_darwin' do
+    mkdir 'sys_darwin' do
       File.open('homebrew.conf', 'w') do |conf|
         conf.write(<<-EOS
 XINCL="#{ENV.cppflags}"
@@ -69,8 +72,7 @@ EOS
       end
     end
 
-    mkdir 'build'
-    cd 'build' do
+    mkdir 'build' do
       # activate drivers
       cp '../drivers.list', '.'
       ['GIF', 'VGIF', 'LATEX', 'PNG' ,'TPNG', 'PS',
@@ -91,10 +93,12 @@ EOS
     end
 
     # install libbutton
-    Button.new.brew do
-      inreplace 'Makefile', 'f77', "#{ENV['FC']} #{ENV['FFLAGS']}"
-      system "make"
-      lib.install 'libbutton.a'
+    if ARGV.include? '--with-button'
+      Button.new.brew do
+        inreplace 'Makefile', 'f77', "#{ENV['FC']} #{ENV['FCFLAGS']}"
+        system "make"
+        lib.install 'libbutton.a'
+      end
     end
   end
 
