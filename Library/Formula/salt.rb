@@ -54,6 +54,16 @@ class SaltSNIFS < Formula
   md5 "429baf814aacf4639a141cc20114bc9b"
   version '2.2.2b'
 end
+class SaltSWOPE2 < Formula
+  url "http://snovae.in2p3.fr/pereira/Swope.tar.gz"
+  md5 "b46f7934138f8735a55716c6e0c3d74b"
+  version '2.2.2b'
+end
+class SaltBESSELL12 < Formula
+  url "http://snovae.in2p3.fr/pereira/Bessell12.tar.gz"
+  md5 "e4586932a33d1b38226fdde52ca510c1"
+  version '2.2.2b'
+end
 class SaltSDSS_AB_off < Formula
   url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-SDSS-magsys.tar.gz"
   md5 "cf8c210fd19c3eef0b7f29b5d35c3270"
@@ -72,7 +82,9 @@ class SaltVEGA < Formula
   version '2.2.2b'
   def linkto () return 'MagSys/BD17-snls3.dat' end
   if ARGV.include? '--snifs'
-    def patches () "http://git.io/salt2diff2" end
+    def patches
+      "https://raw.github.com/gist/1758248/ba02b5aab0c676f0628089e4dadddfb2cfb4b85f/BD17.diff"
+    end
   end
 end
 
@@ -105,7 +117,11 @@ class Salt < Formula
     end
   end
 
-  def patches () "http://git.io/salt2diff" end
+  def patches
+    # data for \Delta m_15(B) + DeltaDayMax and snmag from HEAD
+    ["https://raw.github.com/gist/1758248/6dfbda52b28ce5b5246c165e7faeddb2f47651b4/snfit.diff",
+     "https://raw.github.com/gist/1758248/be1bbdc5c98800d3329351a176ed85e919e8fd55/snmag.diff"]
+  end
 
   def install
     ENV.deparallelize
@@ -135,6 +151,10 @@ class Salt < Formula
         end
         if ARGV.include? '--snifs'
           fitmodel.write(install_subbrew(SaltSNIFS, inst))
+          # CSP from Stritzinger 2011
+          fitmodel.write(install_subbrew(SaltSWOPE2, inst))
+          # Bessell 2012 filters
+          fitmodel.write(install_subbrew(SaltBESSELL12, inst))
         end
       end
 
