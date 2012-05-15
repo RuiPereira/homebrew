@@ -29,6 +29,6 @@ class Valgrind < Formula
   end
 
   def test
-    system "valgrind ls -l"
+    system "#{bin}/valgrind ls -l"
   end
 end
