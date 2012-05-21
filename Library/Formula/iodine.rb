@@ -12,6 +12,6 @@ class Iodine < Formula
     end
 
     inreplace 'Makefile', '$(prefix)/sbin', '$(prefix)/bin'
-    system "make install prefix=#{prefix}"
+    system "make", "install", "prefix=#{prefix}"
   end
 end
