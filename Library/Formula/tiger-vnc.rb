@@ -3,7 +3,7 @@ require 'formula'
 class TigerVnc < Formula
   homepage 'http://tigervnc.org/'
   url 'http://downloads.sourceforge.net/project/tigervnc/tigervnc/1.2.0/tigervnc-1.2.0.tar.gz'
-  md5 '3a5755b4ed600a81c3a17976c6f8420d'
+  sha1 '0542b2549a85b6723deebc3b5ecafa4f1fbee8e6'
 
   depends_on 'cmake' => :build
   depends_on 'jpeg-turbo'
@@ -11,14 +11,12 @@ class TigerVnc < Formula
 
   def install
     ENV.x11
-    # also install unix subdir
-    inreplace 'CMakeLists.txt', 'add_subdirectory(vncviewer)', "add_subdirectory(vncviewer)\nadd_subdirectory(unix)"
     jpegdir = `brew --prefix jpeg-turbo`.chomp
     jpeglib = Dir["#{jpegdir}/lib/libjpeg.a"][0]
     system "cmake -G \"Unix Makefiles\" #{std_cmake_parameters} -DENABLE_NLS:BOOL=OFF -DJPEG_INCLUDE_DIR=#{jpegdir}/include -DJPEG_LIBRARY=#{jpeglib}"
     system "make install"
     # move man pages to proper path
-    man.mkpath
-    mv Dir["#{prefix}/man/*"], man
+    man1.install Dir["#{prefix}/man/man1/*"]
+    rmtree "#{prefix}/man"
   end
 end
