@@ -8,15 +8,21 @@ class TigerVnc < Formula
   depends_on 'cmake' => :build
   depends_on 'jpeg-turbo'
   depends_on 'gnutls' => :recommended
+  depends_on 'gettext'
+  depends_on 'gnutls'
+  depends_on :x11
 
   def install
-    ENV.x11
-    jpegdir = `brew --prefix jpeg-turbo`.chomp
-    jpeglib = Dir["#{jpegdir}/lib/libjpeg.a"][0]
-    system "cmake -G \"Unix Makefiles\" #{std_cmake_parameters} -DENABLE_NLS:BOOL=OFF -DJPEG_INCLUDE_DIR=#{jpegdir}/include -DJPEG_LIBRARY=#{jpeglib}"
-    system "make install"
-    # move man pages to proper path
-    man1.install Dir["#{prefix}/man/man1/*"]
-    rmtree "#{prefix}/man"
+    gettext = Formula.factory('gettext')
+    turbo   = Formula.factory('jpeg-turbo')
+    args = std_cmake_args + %W[
+      -DJPEG_INCLUDE_DIR=#{turbo.include}
+      -DJPEG_LIBRARY=#{turbo.lib}/libjpeg.dylib
+      -DCMAKE_PREFIX_PATH=#{gettext.prefix}
+      .
+    ]
+    system 'cmake', *args
+    system 'make install'
+    mv (prefix+'man'), share
   end
 end
