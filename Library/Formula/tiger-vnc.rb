@@ -6,10 +6,9 @@ class TigerVnc < Formula
   sha1 '0542b2549a85b6723deebc3b5ecafa4f1fbee8e6'
 
   depends_on 'cmake' => :build
-  depends_on 'jpeg-turbo'
   depends_on 'gnutls' => :recommended
+  depends_on 'jpeg-turbo'
   depends_on 'gettext'
-  depends_on 'gnutls'
   depends_on :x11
 
   def install
