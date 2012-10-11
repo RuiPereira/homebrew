@@ -3,6 +3,7 @@ require 'formula'
 class TigerVnc < Formula
   homepage 'http://tigervnc.org/'
   url 'http://downloads.sourceforge.net/project/tigervnc/tigervnc/1.2.0/tigervnc-1.2.0.tar.gz'
+  head 'https://tigervnc.svn.sourceforge.net/svnroot/tigervnc/trunk/'
   sha1 '0542b2549a85b6723deebc3b5ecafa4f1fbee8e6'
 
   depends_on 'cmake' => :build
@@ -13,9 +14,9 @@ class TigerVnc < Formula
 
   # Fix build of included fltk library on Mountain Lion
   # http://www.fltk.org/str.php?L2864
-  def patches
-    { :p0 => DATA }
-  end
+  # def patches
+  #   { :p0 => DATA }
+  # end
 
   def install
     gettext = Formula.factory('gettext')
@@ -24,6 +25,7 @@ class TigerVnc < Formula
       -DJPEG_INCLUDE_DIR=#{turbo.include}
       -DJPEG_LIBRARY=#{turbo.lib}/libjpeg.dylib
       -DCMAKE_PREFIX_PATH=#{gettext.prefix}
+      -DBUILD_JAVA=1
       .
     ]
     system 'cmake', *args
