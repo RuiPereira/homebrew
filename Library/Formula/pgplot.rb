@@ -31,6 +31,8 @@ class Pgplot < Formula
     ENV.deparallelize
     ENV.fortran
     ENV.append 'CPPFLAGS', "-DPG_PPU"
+    # allow long lines in the fortran code (for long homebrew PATHs)
+    ENV.append 'FCFLAGS', "-ffixed-line-length-none"
 
     # re-hardcode the share dir
     inreplace 'src/grgfil.f', '/usr/local/pgplot', share
