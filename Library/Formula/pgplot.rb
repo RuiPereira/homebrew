@@ -2,29 +2,26 @@ require 'formula'
 
 class Button < Formula
   url 'http://www.ucm.es/info/Astrof/software/button/button.tar.gz'
-  md5 'f4b058b59b5903956e3e30ed1b5d4aa0'
+  sha1 'd1bfcb51a9ce5819e00d5d1a1d8c658691193f11'
   version '1.0'
 end
 
 class Pgplot < Formula
-  url 'ftp://ftp.astro.caltech.edu/pub/pgplot/pgplot522.tar.gz'
   homepage 'http://www.astro.caltech.edu/~tjp/pgplot/'
-  md5 'e8a6e8d0d5ef9d1709dfb567724525ae'
+  url 'ftp://ftp.astro.caltech.edu/pub/pgplot/pgplot522.tar.gz'
   version '5.2.2'
+  sha1 '1f1c9aa17eeec9a2fb23fd15a0e4a91dcc49ddc1'
+
+  option 'with-button', 'Install libbutton'
 
   depends_on :x11
 
-  def options
-    [['--with-button', 'Install libbutton']]
-  end
-
   def patches
+    # from MacPorts: https://trac.macports.org/browser/trunk/dports/graphics/pgplot/files
     {:p0 => [
-             # from MacPorts: https://trac.macports.org/browser/trunk/dports/graphics/pgplot/files
-             "https://trac.macports.org/export/89961/trunk/dports/graphics/pgplot/files/patch-makemake.diff",
-             "https://trac.macports.org/export/89961/trunk/dports/graphics/pgplot/files/patch-proccom.c.diff",
-            ]
-    }
+     "https://trac.macports.org/export/89961/trunk/dports/graphics/pgplot/files/patch-makemake.diff",
+     "https://trac.macports.org/export/89961/trunk/dports/graphics/pgplot/files/patch-proccom.c.diff",
+    ]}
   end
 
   def install
@@ -82,21 +79,21 @@ EOS
        'VPS', 'CPS', 'VCPS', 'XWINDOW', 'XSERVE'].each do |drv|
         inreplace 'drivers.list', /^! (.*\/#{drv} .*)/, '  \1'
       end
+
       # make everything
       system '../makemake .. darwin; make; make cpg; make pgplot.html'
+
       # install
-      bin.install ['pgxwin_server', 'pgbind']
+      bin.install 'pgxwin_server', 'pgbind'
       lib.install Dir['*.dylib', '*.a']
       include.install Dir['*.h']
       share.install Dir['*.txt', '*.dat']
       doc.install Dir['*.doc', '*.html']
-      examples = prefix + 'examples'
-      examples.mkpath
-      examples.install Dir['*demo*', '../examples/pgdemo*.f', '../cpg/cpgdemo*.c', '../drivers/*/pg*demo.*']
+      (prefix/'examples').install Dir['*demo*', '../examples/pgdemo*.f', '../cpg/cpgdemo*.c', '../drivers/*/pg*demo.*']
     end
 
     # install libbutton
-    if ARGV.include? '--with-button'
+    if build.include? 'with-button'
       Button.new.brew do
         inreplace 'Makefile', 'f77', "#{ENV['FC']} #{ENV['FCFLAGS']}"
         system "make"
