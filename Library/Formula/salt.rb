@@ -113,10 +113,12 @@ class Salt < Formula
     end
   end
 
-  def patches
-    # data for \Delta m_15(B) + DeltaDayMax and snmag from HEAD
-    ["https://raw.github.com/gist/1758248/6dfbda52b28ce5b5246c165e7faeddb2f47651b4/snfit.diff",
-     "https://raw.github.com/gist/1758248/be1bbdc5c98800d3329351a176ed85e919e8fd55/snmag.diff"]
+  if build.include? 'snifs'
+    def patches
+      # data for \Delta m_15(B) + DeltaDayMax and snmag from HEAD
+      ["https://raw.github.com/gist/1758248/6dfbda52b28ce5b5246c165e7faeddb2f47651b4/snfit.diff",
+       "https://raw.github.com/gist/1758248/be1bbdc5c98800d3329351a176ed85e919e8fd55/snmag.diff"]
+    end
   end
 
   def install
@@ -145,7 +147,7 @@ class Salt < Formula
          SaltSWOPE, SaltACSWF, SaltNICMOS2].each do |cls|
           fitmodel.write(install_subbrew(cls, inst))
         end
-        if ARGV.include? '--snifs'
+        if build.include? 'snifs'
           fitmodel.write(install_subbrew(SaltSNIFS, inst))
           # CSP from Stritzinger 2011
           fitmodel.write(install_subbrew(SaltSWOPE2, inst))
