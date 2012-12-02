@@ -19,7 +19,7 @@ class Snid < Formula
   depends_on 'pgplot'
 
   # no libbutton compilation and patch for new templates
-  def patches () DATA end
+  def patches() DATA end
 
   def install
     ENV.fortran
@@ -51,7 +51,7 @@ class Snid < Formula
 
   def test
     mktemp do
-      system "snid wmin=4300 wmax=8900 #{prefix}/test/sn2003jo.dat"
+      system "snid inter=0 plot=0 #{prefix}/test/sn2003jo.dat"
     end
 
   end
