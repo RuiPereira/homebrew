@@ -12,6 +12,8 @@ class TigerVnc < Formula
   depends_on 'gettext'
   depends_on :x11
 
+  option 'with-java', 'Install java client'
+
   # Fix build of included fltk library on Mountain Lion
   # http://www.fltk.org/str.php?L2864
   # Patch for compatibility with gnutls 3
@@ -26,9 +28,9 @@ class TigerVnc < Formula
       -DJPEG_INCLUDE_DIR=#{turbo.include}
       -DJPEG_LIBRARY=#{turbo.lib}/libjpeg.dylib
       -DCMAKE_PREFIX_PATH=#{gettext.prefix}
-      -DBUILD_JAVA=1
       .
     ]
+    args << "-DBUILD_JAVA=1" if build.include? 'with-java'
     system 'cmake', *args
     system 'make install'
     mv (prefix+'man'), share
