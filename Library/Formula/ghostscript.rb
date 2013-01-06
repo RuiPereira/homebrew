@@ -24,6 +24,7 @@ class Ghostscript < Formula
   depends_on 'jbig2dec'
   depends_on 'little-cms2'
   depends_on :libpng
+#  depends_on :x11 #=> '2.7.2'
 
   # Fix dylib names, per installation instructions
   def patches
@@ -54,7 +55,6 @@ class Ghostscript < Formula
         --disable-compile-inits
         --disable-gtk
         --with-system-libtiff
-        --without-x
       ]
 
       if build.head?

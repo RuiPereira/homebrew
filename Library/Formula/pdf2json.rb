@@ -11,6 +11,6 @@ class Pdf2json < Formula
     # http://code.google.com/p/pdf2json/issues/detail?id=2
     inreplace "Makefile", "/man/", "/share/man/"
     system "make", "CC=#{ENV.cc}", "CXX=#{ENV.cxx}"
-    bin.install('src/pdf2json')
+    bin.install 'src/pdf2json'
   end
 end
