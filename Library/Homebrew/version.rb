@@ -22,17 +22,17 @@ class VersionElement
     @elem.to_s
   end
 
-  def string?
-    @elem.is_a? String
-  end
-
-  def numeric?
-    @elem.is_a? Numeric
-  end
-
   protected
 
   attr_reader :elem
+
+  def string?
+    elem.is_a? String
+  end
+
+  def numeric?
+    elem.is_a? Numeric
+  end
 end
 
 class Version
@@ -182,6 +182,10 @@ class Version
 
     # e.g. http://mirrors.jenkins-ci.org/war/1.486/jenkins.war
     m = /\/(\d\.\d+)\//.match(spec.to_s)
+    return m.captures.first unless m.nil?
+
+    # e.g. http://www.ijg.org/files/jpegsrc.v8d.tar.gz
+    m = /\.v(\d+[a-z]?)/.match(stem)
     return m.captures.first unless m.nil?
   end
 
