@@ -1,35 +1,46 @@
 require 'formula'
 
+def kext_prefix
+  prefix/'Library/Extensions'
+end
+
 class Tuntap < Formula
-  head 'git://tuntaposx.git.sourceforge.net/gitroot/tuntaposx/tuntaposx', :using => :git
-  homepage ''
-  md5 '636e550b3bc204c82564ec7c254f57e1'
+  homepage 'http://tuntaposx.sourceforge.net/'
+  url 'git://git.code.sf.net/p/tuntaposx/code', :tag => 'release_20111101'
+  version '20111101'
 
   def install
-    chdir 'tuntap' do
-      # inreplace ['src/tun/Makefile', 'src/tap/Makefile'], '-arch ppc', ''
+    ENV.j1 # to avoid race conditions (can't open: ../tuntap.o)
+    cd 'tuntap' do
       system "make"
-      prefix.install ['tun.kext', 'tap.kext', 'startup_item']
+      kext_prefix.install "tun.kext", "tap.kext"
+      prefix.install "startup_item/tap", "startup_item/tun"
     end
   end
 
   def caveats; <<-EOS.undent
-  * how to install the extensions
-    sudo mkdir -p /Library/Extensions
-    sudo cp -pR #{prefix}/tap.kext /Library/Extensions/
-    sudo chown -R root:wheel /Library/Extensions/tap.kext
-    sudo cp -pR #{prefix}/tun.kext /Library/Extensions/ 
-    sudo chown -R root:wheel /Library/Extensions/tun.kext
+      In order for TUN/TAP network devices to work, the tun/tap kernel extensions
+      must be installed by the root user:
 
-  * how to load the extensions
-    sudo kextload /Library/Extensions/tap.kext
-    sudo kextload /Library/Extensions/tun.kext
+        sudo cp -pR #{kext_prefix}/tap.kext /Library/Extensions/
+        sudo cp -pR #{kext_prefix}/tun.kext /Library/Extensions/
+        sudo chown -R root:wheel /Library/Extensions/tap.kext
+        sudo chown -R root:wheel /Library/Extensions/tun.kext
+        sudo touch /Library/Extensions/
 
-  * how to install the startup items
-    sudo cp -pR #{prefix}/startup_item/tap /Library/StartupItems/
-    sudo chown -R root:wheel /Library/StartupItems/tap
-    sudo cp -pR #{prefix}/startup_item/tun /Library/StartupItems/ 
-    sudo chown -R root:wheel /Library/StartupItems/tun
-  EOS
+      To load the extensions at startup, you have to install those scripts too:
+
+        sudo cp -pR #{prefix}/tap /Library/StartupItems/
+        sudo cp -pR #{prefix}/tun /Library/StartupItems/
+
+      If upgrading from a previous version of tuntap, the old kernel extension
+      will need to be unloaded before performing the steps listed above. First,
+      check that no tunnel is being activated, disconnect them all and then unload
+      the kernel extension:
+
+        sudo kextunload -b foo.tun
+        sudo kextunload -b foo.tap
+
+    EOS
   end
 end
