@@ -1,34 +1,34 @@
 require 'formula'
 
 class SnidTemplates < Formula
-  url 'http://marwww.in2p3.fr/~blondin/software/snid/templates-2.0.tgz'
-  md5 '3534a6a990c4b35e611514dfe95cce83'
+  url 'http://www.oamp.fr/people/blondin/software/snid/templates-2.0.tgz'
+  sha1 '1e5c33ee998203abc171e7fdda7114a27130d418'
 end
 
 class SnidBSNIPTemplates < Formula
   url 'http://hercules.berkeley.edu/database/BSNIPI/bsnip_v7_snid_templates.tar.gz'
-  md5 'ed9d5c7fbd067a95ff6bc5f276097864'
-  version '7.0'
+  sha1 '1d1d2534d9201c864ad60e58acf6337cec0700e2'
 end
 
 class Snid < Formula
-  url 'http://marwww.in2p3.fr/~blondin/software/snid/snid-5.0.tar.gz'
-  homepage 'http://marwww.in2p3.fr/~blondin/software/snid/'
-  md5 'aefed2e2cbd5b26fd1f0171bbb7b6092'
+  url 'http://www.oamp.fr/people/blondin/software/snid/snid-5.0.tar.gz'
+  homepage 'http://www.oamp.fr/people/blondin/software/snid/'
+  sha1 '0ba81c23584388065169b88bf54a9c3975b12460'
 
-  depends_on 'pgplot'
+  depends_on :x11
+  depends_on 'pgplot' => 'with-button'
 
   # no libbutton compilation and patch for new templates
   def patches() DATA end
 
   def install
     ENV.fortran
-    ENV.x11
 
     # new templates
     SnidTemplates.new.brew do
       prefix.install '../templates-2.0'
     end
+    # BSNIP
     SnidBSNIPTemplates.new.brew do
       safe_system 'ls *.lnw > templist'
       cp "#{buildpath}/templates/texplist", '.'
@@ -44,8 +44,7 @@ class Snid < Formula
     ENV['PGLIBS'] = "-Wl,-framework -Wl,Foundation -L#{HOMEBREW_PREFIX}/lib -lpgplot"
     system "make"
     bin.install 'snid', 'logwave', 'plotlnw'
-    prefix.install Dir['templates']
-    prefix.install Dir['test']
+    prefix.install Dir['templates', 'test']
     doc.install Dir['doc/*']
   end
 
