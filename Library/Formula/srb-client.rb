@@ -3,7 +3,7 @@ require 'formula'
 class SrbClient < Formula
   homepage 'http://www.sdsc.edu/srb/index.php'
   url 'http://www.sdsc.edu/srb/tarfiles/SRB3_4_2client.tar'
-  md5 'cb42947abbabd7677ef4c960fc2ce2be'
+  sha1 '76f7d89d8b489741f66276d21bef6b4c87ed046d'
   version '3.4.2'
 
   def patches () DATA end
