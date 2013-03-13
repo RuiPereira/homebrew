@@ -2,8 +2,8 @@ require 'formula'
 
 class BbftpClient < Formula
   homepage 'http://doc.in2p3.fr/bbftp/'
-  url 'http://doc.in2p3.fr/bbftp/dist/bbftp-client-3.2.0.tar.gz'
-  sha1 '90900c672f8b68b6b0bade3b6f66931722b6a2ae'
+  url 'http://doc.in2p3.fr/bbftp/dist/bbftp-client-3.2.1.tar.gz'
+  sha1 '26113782b8826610c877f83bdaf79798b30a507d'
 
   def install
     chdir 'bbftpc' do
