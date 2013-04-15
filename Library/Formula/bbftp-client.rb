@@ -6,18 +6,14 @@ class BbftpClient < Formula
   sha1 '26113782b8826610c877f83bdaf79798b30a507d'
 
   def install
-    chdir 'bbftpc' do
+    cd 'bbftpc' do
       system "./configure", "--disable-debug", "--disable-dependency-tracking",
                             "--prefix=#{prefix}"
       system "make install"
     end
-    include.install Dir['includes/*']
-    docs = Dir['doc/*']
-    man1.install docs.delete 'doc/bbftp.1'
-    doc.install docs
   end
 
-  def test
+  test do
     system "#{bin}/bbftp", "-v"
   end
 end
