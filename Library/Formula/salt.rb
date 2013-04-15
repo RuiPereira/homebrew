@@ -51,17 +51,17 @@ class SaltSDSS < Formula
 end
 class SaltSNIFS < Formula
   url "http://snovae.in2p3.fr/pereira/SNIFS.tar.gz"
-  md5 "429baf814aacf4639a141cc20114bc9b"
+  sha1 '7a7dc2541068942488d3ee5dec3e2e1fc4343741'
   version '2.2.2b'
 end
 class SaltSWOPE2 < Formula
   url "http://snovae.in2p3.fr/pereira/Swope.tar.gz"
-  md5 "b46f7934138f8735a55716c6e0c3d74b"
+  sha1 'da45bfcfaa39756d0145aade9f7383de093e0a59'
   version '2.2.2b'
 end
 class SaltBESSELL12 < Formula
   url "http://snovae.in2p3.fr/pereira/Bessell12.tar.gz"
-  md5 "e4586932a33d1b38226fdde52ca510c1"
+  sha1 'f98b97f044cd297e6fe9e403b48247cf51632c5b'
   version '2.2.2b'
 end
 class SaltSDSS_AB_off < Formula
