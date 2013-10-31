@@ -5,6 +5,7 @@ class Salt < Formula
   url 'http://supernovae.in2p3.fr/~guy/salt/download/snfit-2.2.2b.tar.gz'
   sha1 'e435ca19d22800f95f5363038297593ec4dae97f'
 
+  option 'snifs', 'Install SNIFS data'
   depends_on :fortran
 
   resource 'SALT2' do
@@ -66,6 +67,24 @@ class Salt < Formula
     version '2.2.2b'
   end
 
+  resource 'SNIFS' do
+    url "http://snovae.in2p3.fr/pereira/SNIFS.tar.gz"
+    sha1 '7a7dc2541068942488d3ee5dec3e2e1fc4343741'
+    version '2.2.2b'
+  end
+
+  resource 'SWOPE2' do
+    url "http://snovae.in2p3.fr/pereira/Swope.tar.gz"
+    sha1 'da45bfcfaa39756d0145aade9f7383de093e0a59'
+    version '2.2.2b'
+  end
+
+  resource 'BESSELL12' do
+    url "http://snovae.in2p3.fr/pereira/Bessell12.tar.gz"
+    sha1 'f98b97f044cd297e6fe9e403b48247cf51632c5b'
+    version '2.2.2b'
+  end
+
   resource 'SDSS-AB-off' do
     url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-SDSS-magsys.tar.gz"
     sha1 'd1e4a4c5fe7f56c2502ba42f0b3e28f5168928be'
@@ -82,8 +101,12 @@ class Salt < Formula
     url "http://supernovae.in2p3.fr/~guy/salt-dev/download/SNLS3-magsys-1.tar.gz"
     sha1 '4f3f05d1d08c6840f13b0ec6101826159a450eff'
     version '2.2.2b'
+    # if build.include? 'snifs'
+    #   def patches
+    #     "https://gist.github.com/RuiPereira/1758248/raw/ba02b5aab0c676f0628089e4dadddfb2cfb4b85f/BD17.diff"
+    #   end
+    # end
   end
-
 
   def install_resource(name, dir)
     resource(name).stage do
@@ -108,8 +131,8 @@ class Salt < Formula
   if build.include? 'snifs'
     def patches
       # data for \Delta m_15(B) + DeltaDayMax and snmag from HEAD
-      ["https://raw.github.com/gist/1758248/6dfbda52b28ce5b5246c165e7faeddb2f47651b4/snfit.diff",
-       "https://raw.github.com/gist/1758248/be1bbdc5c98800d3329351a176ed85e919e8fd55/snmag.diff"]
+      ["https://gist.github.com/RuiPereira/1758248/raw/6dfbda52b28ce5b5246c165e7faeddb2f47651b4/snfit.diff",
+       "https://gist.github.com/RuiPereira/1758248/raw/be1bbdc5c98800d3329351a176ed85e919e8fd55/snmag.diff"]
     end
   end
 
@@ -137,6 +160,11 @@ class Salt < Formula
         SDSS SWOPE ACSWF NICMOS2
       }.each do |name|
         f.write(install_resource(name, inst))
+      end
+      if build.include? 'snifs'
+        %w{SNIFS SWOPE2 BESSELL12}.each do |name|
+          f.write(install_resource(name, data))
+        end
       end
     end
 
