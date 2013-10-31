@@ -15,8 +15,8 @@ end
 
 class Squid < Formula
   homepage 'http://www.squid-cache.org/'
-  url 'http://www.squid-cache.org/Versions/v3/3.2/squid-3.2.9.tar.gz'
-  sha1 'c1f5f8de4e622a1fe98e9f854507237fbae06be2'
+  url 'http://www.squid-cache.org/Versions/v3/3.3/squid-3.3.9.tar.gz'
+  sha1 '803c311bfb10b0cfb5d7f4df5d9e97419155d06a'
 
   depends_on NoBdb5
 
@@ -31,6 +31,7 @@ class Squid < Formula
       --enable-ssl
       --enable-ssl-crtd
       --disable-eui
+      --enable-ipfw-transparent
     ]
 
     system "./configure", *args
@@ -51,7 +52,6 @@ class Squid < Formula
         <string>#{opt_prefix}/sbin/squid</string>
         <string>-N</string>
         <string>-d 1</string>
-        <string>-D</string>
       </array>
       <key>RunAtLoad</key>
       <true/>

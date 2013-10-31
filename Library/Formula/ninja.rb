@@ -2,8 +2,9 @@ require 'formula'
 
 class Ninja < Formula
   homepage 'https://github.com/martine/ninja'
-  url 'https://github.com/martine/ninja/archive/v1.3.3.tar.gz'
-  sha1 '1e27d85316a267afa5e98ed62b660395ab5b9851'
+  url 'https://github.com/martine/ninja/archive/v1.4.0.tar.gz'
+  sha1 '3ab2fcb71e9f70c19cda2d63983cdfe0f971d04f'
+  head 'https://github.com/martine/ninja.git'
 
   depends_on :python
 

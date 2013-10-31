@@ -2,15 +2,20 @@ require 'formula'
 
 class Libmagic < Formula
   homepage 'http://www.darwinsys.com/file/'
-  url 'ftp://ftp.astron.com/pub/file/file-5.14.tar.gz'
-  mirror 'http://fossies.org/unix/misc/file-5.14.tar.gz'
-  sha1 '064c8f17a5f7ae1e336a9285131e046d3b2d04d7'
+  url 'ftp://ftp.astron.com/pub/file/file-5.15.tar.gz'
+  mirror 'http://fossies.org/unix/misc/file-5.15.tar.gz'
+  sha1 'de1a060aa5fe61c1a6f0359fb526e824b4244323'
 
   option :universal
 
+  depends_on :python => :optional
+
   # Fixed upstream, should be in next release
   # See http://bugs.gw.com/view.php?id=230
-  def patches; DATA; end if MacOS.version < :lion
+  def patches
+    p = []
+    p << DATA if MacOS.version < :lion
+  end
 
   def install
     ENV.universal_binary if build.universal?
@@ -20,9 +25,21 @@ class Libmagic < Formula
                           "--enable-fsect-man5"
     system "make install"
 
+    python do
+      cd "python" do
+        system python, "setup.py", "install", "--prefix=#{prefix}"
+      end
+    end
+
     # Don't dupe this system utility
     rm bin/"file"
     rm man1/"file.1"
+  end
+
+  test do
+    if build.with? 'python'
+      system 'python', '-c', "import magic; magic._init()"
+    end
   end
 end
 

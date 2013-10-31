@@ -2,19 +2,20 @@ require 'formula'
 
 class Sleuthkit < Formula
   homepage 'http://www.sleuthkit.org/'
-  url 'http://downloads.sourceforge.net/project/sleuthkit/sleuthkit/4.0.2/sleuthkit-4.0.2.tar.gz'
-  sha1 'e5394d53eb07615e6e78ff7fa73340cc6f6e98d4'
+  url 'http://downloads.sourceforge.net/project/sleuthkit/sleuthkit/4.1.2/sleuthkit-4.1.2.tar.gz'
+  sha1 'e44af40a934abeb6ce577f9ba71c86f11b80a559'
 
-  head 'https://github.com/sleuthkit/sleuthkit.git'
+  head do
+    url 'https://github.com/sleuthkit/sleuthkit.git'
 
-  option 'with-jni', "Build Sleuthkit with JNI bindings"
-
-  if build.head?
     depends_on :autoconf
     depends_on :automake
     depends_on :libtool
   end
 
+  option 'with-jni', "Build Sleuthkit with JNI bindings"
+
+  depends_on :ant
   depends_on 'afflib' => :optional
   depends_on 'libewf' => :optional
 

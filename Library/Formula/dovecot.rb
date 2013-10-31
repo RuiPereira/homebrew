@@ -2,8 +2,9 @@ require 'formula'
 
 class Dovecot < Formula
   homepage 'http://dovecot.org/'
-  url 'http://dovecot.org/releases/2.2/dovecot-2.2.2.tar.gz'
-  sha256 '30c98e8f9e40d7397d451a8679359b70031702f205aefbff1a6e27656fb63b9a'
+  url 'http://dovecot.org/releases/2.2/dovecot-2.2.6.tar.gz'
+  mirror 'http://fossies.org/linux/misc/dovecot-2.2.6.tar.gz'
+  sha256 '62272bce0ba4b992f44b6eaf72543860ecd21694032243af009b9da2c0d3d6e5'
 
   def install
     system "./configure", "--disable-dependency-tracking",

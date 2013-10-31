@@ -3,7 +3,7 @@ require 'formula'
 class Bup < Formula
   homepage 'https://github.com/bup/bup'
   url 'https://github.com/bup/bup/archive/bup-0.25-rc1.tar.gz'
-  sha1 'b88bd38d6f00a646faf0bd1f561595ebc0e55b30'
+  sha1 '62e34c8cca17794ba27b56799ecc99c269dad6d9'
 
   head 'https://github.com/bup/bup.git', :branch => 'master'
 
@@ -19,7 +19,6 @@ class Bup < Formula
 
   def install
     python do
-      ohai ENV['PATH']
       system "./configure", "--prefix=#{prefix}"
       system "make"
     end

@@ -16,13 +16,27 @@ module Homebrew extend self
         msg = blacklisted? name
         raise "No available formula for #{name}\n#{msg}" if msg
       end
+      if not File.exist? name and name =~ HOMEBREW_TAP_FORMULA_REGEX then
+        require 'cmd/tap'
+        begin
+          install_tap $1, $2
+        rescue AlreadyTappedError => e
+        end
+      end
     end unless ARGV.force?
 
-    install_formulae ARGV.formulae
+    perform_preinstall_checks
+    ARGV.formulae.each do |f|
+      begin
+        install_formula(f)
+      rescue CannotInstallFormulaError => e
+        ofail e.message
+      end
+    end
   end
 
   def check_ppc
-    case Hardware.cpu_type when :ppc, :dunno
+    case Hardware::CPU.type when :ppc, :dunno
       abort <<-EOS.undent
         Sorry, Homebrew does not support your computer's CPU architecture.
         For PPC support, see: https://github.com/mistydemeo/tigerbrew
@@ -69,16 +83,6 @@ module Homebrew extend self
     check_cellar
   end
 
-  def install_formulae formulae
-    formulae = [formulae].flatten.compact
-    unless formulae.empty?
-      perform_preinstall_checks
-      formulae.each do |f|
-        install_formula(f)
-      end
-    end
-  end
-
   def install_formula f
     fi = FormulaInstaller.new(f)
     fi.install
@@ -89,7 +93,6 @@ module Homebrew extend self
     # another formula. In that case, don't generate an error, just move on.
   rescue FormulaAlreadyInstalledError => e
     opoo e.message
-  rescue CannotInstallFormulaError => e
-    ofail e.message
+  # Ignore CannotInstallFormulaError and let caller handle it.
   end
 end
